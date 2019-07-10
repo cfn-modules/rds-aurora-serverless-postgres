@@ -163,14 +163,7 @@ Resources:
       Description: !Ref 'AWS::StackName'
       Family: !FindInMap [EngineVersionMap, !Ref EngineVersion, ClusterParameterGroupFamily]
       Parameters:
-        character_set_client: utf8
-        character_set_connection: utf8
-        character_set_database: utf8
-        character_set_filesystem: utf8
-        character_set_results: utf8
-        character_set_server: utf8
-        collation_connection: utf8_general_ci
-        collation_server: utf8_general_ci
+        client_encoding: 'UTF8'
   DBCluster:
     DeletionPolicy: Snapshot # default
     UpdateReplacePolicy: Snapshot
