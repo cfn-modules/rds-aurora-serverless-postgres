@@ -139,8 +139,8 @@ Resources:
       GroupDescription: !Ref 'AWS::StackName'
       SecurityGroupIngress:
       - IpProtocol: tcp
-        FromPort: 3306
-        ToPort: 3306
+        FromPort: 5432
+        ToPort: 5432
         SourceSecurityGroupId: {'Fn::ImportValue': !Sub '${ClientSgModule}-SecurityGroupId'}
       VpcId: {'Fn::ImportValue': !Sub '${VpcModule}-Id'}
   SecurityGroupInSshFromBastion:
@@ -149,8 +149,8 @@ Resources:
     Properties:
       GroupId: !Ref SecurityGroup
       IpProtocol: tcp
-      FromPort: 3306
-      ToPort: 3306
+      FromPort: 5432
+      ToPort: 5432
       SourceSecurityGroupId: {'Fn::ImportValue': !Sub '${BastionModule}-SecurityGroupId'}
   DBSubnetGroup:
     Type: 'AWS::RDS::DBSubnetGroup'
