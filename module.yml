@@ -197,7 +197,7 @@ Resources:
       EventCategories:
       - failover
       - failure
-      - notification
+      - maintenance
       SnsTopicArn: {'Fn::ImportValue': !Sub '${AlertingModule}-Arn'}
       SourceIds: [!Ref DBCluster]
       SourceType: 'db-cluster'
