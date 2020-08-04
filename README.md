@@ -122,7 +122,7 @@ none
     </tr>
     <tr>
       <td>DBSnapshotIdentifier</td>
-      <td>Identifier for the DB cluster snapshot from which you want to restore (leave blank to create an empty cluster)/td>
+      <td>Identifier for the DB cluster snapshot from which you want to restore (leave blank to create an empty cluster)</td>
       <td></td>
       <td>no</td>
       <td></td>
