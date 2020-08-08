@@ -1,6 +1,3 @@
-[![Build Status](https://travis-ci.org/cfn-modules/rds-aurora-serverless-postgres.svg?branch=master)](https://travis-ci.org/cfn-modules/rds-aurora-serverless-postgres)
-[![NPM version](https://img.shields.io/npm/v/@cfn-modules/rds-aurora-serverless-postgres.svg)](https://www.npmjs.com/package/@cfn-modules/rds-aurora-serverless-postgres)
-
 # cfn-modules: AWS RDS Aurora Serverless PostgreSQL cluster
 
 RDS Aurora Serverless PostgreSQL cluster with secure firewall configuration, [encryption](https://www.npmjs.com/package/@cfn-modules/kms-key), multi AZ, auto scaling, backup enabled, and [alerting](https://www.npmjs.com/package/@cfn-modules/alerting).
