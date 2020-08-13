@@ -70,7 +70,7 @@ Parameters:
     Type: String
     NoEcho: true
     Default: ''
-  DBParameterGroupName:
+  DBClusterParameterGroupName:
     Description: 'Optional name of an existing DB parameter group.'
     Type: String
     Default: ''
@@ -128,7 +128,8 @@ Conditions:
   HasSecretModule: !Not [!Equals [!Ref SecretModule, '']]
   HasNotDBSnapshotIdentifier: !Equals [!Ref DBSnapshotIdentifier, '']
   HasDBSnapshotIdentifier: !Not [!Condition HasNotDBSnapshotIdentifier]
-  HasDBParameterGroupName: !Not [!Equals [!Ref DBParameterGroupName, '']]
+  HasDBClusterParameterGroupName: !Not [!Equals [!Ref DBClusterParameterGroupName, '']]
+  HasNotDBClusterParameterGroupName: !Not [!Condition HasDBClusterParameterGroupName]
 Resources:
   RecordSet:
     Condition: HasHostedZoneModule
@@ -168,6 +169,7 @@ Resources:
       DBSubnetGroupDescription: !Ref 'AWS::StackName'
       SubnetIds: !Split [',', {'Fn::ImportValue': !Sub '${VpcModule}-SubnetIdsPrivate'}]
   DBClusterParameterGroup:
+    Condition: HasNotDBClusterParameterGroupName
     Type: 'AWS::RDS::DBClusterParameterGroup'
     Properties:
       Description: !Ref 'AWS::StackName'
@@ -181,8 +183,10 @@ Resources:
     Properties:
       BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
       DatabaseName: !If [HasDBSnapshotIdentifier, !Ref 'AWS::NoValue', !Ref DBName]
-      DBClusterParameterGroupName: !Ref DBClusterParameterGroup
-      DBParameterGroupName: !If [HasDBParameterGroupName, !Ref DBParameterGroupName, !Ref 'AWS::NoValue']
+      DBClusterParameterGroupName: !If
+      - HasDBClusterParameterGroupName
+      - !Ref DBClusterParameterGroupName
+      - !Ref DBClusterParameterGroup
       DBSubnetGroupName: !Ref DBSubnetGroup
       EnableHttpEndpoint: !Ref EnableDataApi
       Engine: aurora-postgresql
