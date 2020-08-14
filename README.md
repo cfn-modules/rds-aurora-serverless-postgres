@@ -192,14 +192,14 @@ none
       <td>The maximum capacity units for a Serverless Aurora cluster</td>
       <td>2</td>
       <td>no</td>
-      <td>[1, 2, 4, 8, 16, 32, 64, 128, 256]</td>
+      <td>[2, 4, 8, 16, 32, 64, 192, 384]</td>
     </tr>
     <tr>
       <td>MinCapacity</td>
       <td>The minimum capacity units for a Serverless Aurora cluster</td>
       <td>2</td>
       <td>no</td>
-      <td>[1, 2, 4, 8, 16, 32, 64, 128, 256]</td>
+      <td>[2, 4, 8, 16, 32, 64, 192, 384]</td>
     </tr>
     <tr>
       <td>EngineVersion</td>
