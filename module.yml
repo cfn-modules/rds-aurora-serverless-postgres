@@ -70,6 +70,10 @@ Parameters:
     Type: String
     NoEcho: true
     Default: ''
+  DBClusterIdentifier:
+    Description: 'Optional name used to identify DB Cluster.'
+    Type: String
+    Default: ''
   DBClusterParameterGroupName:
     Description: 'Optional name of an existing DB parameter group.'
     Type: String
@@ -128,6 +132,7 @@ Conditions:
   HasSecretModule: !Not [!Equals [!Ref SecretModule, '']]
   HasNotDBSnapshotIdentifier: !Equals [!Ref DBSnapshotIdentifier, '']
   HasDBSnapshotIdentifier: !Not [!Condition HasNotDBSnapshotIdentifier]
+  HasDBClusterIdentifier: !Not [!Equals [!Ref DBClusterIdentifier, '']]
   HasDBClusterParameterGroupName: !Not [!Equals [!Ref DBClusterParameterGroupName, '']]
   HasNotDBClusterParameterGroupName: !Not [!Condition HasDBClusterParameterGroupName]
 Resources:
@@ -183,6 +188,7 @@ Resources:
     Properties:
       BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
       DatabaseName: !If [HasDBSnapshotIdentifier, !Ref 'AWS::NoValue', !Ref DBName]
+      DBClusterIdentifier: !If [HasDBClusterIdentifier, !Ref DBClusterIdentifier, !Ref 'AWS::NoValue']
       DBClusterParameterGroupName: !If
       - HasDBClusterParameterGroupName
       - !Ref DBClusterParameterGroupName
