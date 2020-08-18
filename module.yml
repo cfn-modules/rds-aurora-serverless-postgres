@@ -227,7 +227,7 @@ Outputs:
   ModuleId:
     Value: 'rds-aurora-serverless-postgres'
   ModuleVersion:
-    Value: '1.0.1'
+    Value: '1.1.0'
   StackName:
     Value: !Ref 'AWS::StackName'
   Name:
