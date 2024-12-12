@@ -114,8 +114,8 @@ Parameters:
   EngineVersion:
     Description: 'Aurora Serverless PostgreSQL version.'
     Type: String
-    Default: '10.7'
-    AllowedValues: ['10.7'] # aws rds describe-db-engine-versions --engine aurora-postgresql --query 'DBEngineVersions[?contains(SupportedEngineModes,`serverless`)]'
+    Default: '13.12'
+    AllowedValues: ['13.12'] # aws rds describe-db-engine-versions --engine aurora-postgresql --query 'DBEngineVersions[?contains(SupportedEngineModes,`serverless`)]'
   EnableDataApi:
     Description: 'Enable the Data API (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html).'
     Type: String
@@ -123,8 +123,8 @@ Parameters:
     Default: 'true'
 Mappings:
   EngineVersionMap:
-    '10.7':
-      ClusterParameterGroupFamily: 'aurora-postgresql10'
+    '13.12':
+      ClusterParameterGroupFamily: 'aurora-postgresql13'
 Conditions:
   HasBastionModule: !Not [!Equals [!Ref BastionModule, '']]
   HasHostedZoneModule: !Not [!Equals [!Ref HostedZoneModule, '']]
@@ -188,30 +188,33 @@ Resources:
     Properties:
       BackupRetentionPeriod: !Ref DBBackupRetentionPeriod
       DatabaseName: !If [HasDBSnapshotIdentifier, !Ref 'AWS::NoValue', !Ref DBName]
-      DBClusterIdentifier: !If [HasDBClusterIdentifier, !Ref DBClusterIdentifier, !Ref 'AWS::NoValue']
       DBClusterParameterGroupName: !If
       - HasDBClusterParameterGroupName
       - !Ref DBClusterParameterGroupName
       - !Ref DBClusterParameterGroup
       DBSubnetGroupName: !Ref DBSubnetGroup
       EnableHttpEndpoint: !Ref EnableDataApi
-      Engine: aurora-postgresql
-      EngineMode: serverless
+      Engine: 'aurora-postgresql'
       EngineVersion: !Ref EngineVersion
       KmsKeyId: !If [HasDBSnapshotIdentifier, !Ref 'AWS::NoValue', {'Fn::ImportValue': !Sub '${KmsKeyModule}-Arn'}]
       MasterUsername: !If [HasDBSnapshotIdentifier, !Ref 'AWS::NoValue', !Ref DBMasterUsername]
       MasterUserPassword: !If [HasDBSnapshotIdentifier, !Ref 'AWS::NoValue', !If [HasSecretModule, !Join ['', ['{{resolve:secretsmanager:', {'Fn::ImportValue': !Sub '${SecretModule}-Arn'}, '}}']], !Ref DBMasterUserPassword]]
-      # PreferredBackupWindow: !Ref PreferredBackupWindow TODO re-enable as soon as CloudFormation bug ix fixed
-      # PreferredMaintenanceWindow: !Ref PreferredMaintenanceWindow TODO re-enable as soon as CloudFormation bug ix fixed
-      ScalingConfiguration:
-        AutoPause: !Ref AutoPause
+      PreferredBackupWindow: !Ref PreferredBackupWindow
+      PreferredMaintenanceWindow: !Ref PreferredMaintenanceWindow
+      ServerlessV2ScalingConfiguration:
         MaxCapacity: !Ref MaxCapacity
         MinCapacity: !Ref MinCapacity
-        SecondsUntilAutoPause: !Ref SecondsUntilAutoPause
+        # SecondsUntilAutoPause: !Ref SecondsUntilAutoPause TODO Waiting for CloudFormation support
       SnapshotIdentifier: !If [HasDBSnapshotIdentifier, !Ref DBSnapshotIdentifier, !Ref 'AWS::NoValue']
       StorageEncrypted: true
       VpcSecurityGroupIds:
       - !Ref SecurityGroup
+  ServerlessDBInstance:
+    Type: 'AWS::RDS::DBInstance'
+    Properties:
+      DBClusterIdentifier: !Ref DBCluster
+      DBInstanceClass: 'db.serverless'
+      Engine: 'aurora-postgresql'
   DBClusterEventSubscription:
     Condition: HasAlertingModule
     Type: 'AWS::RDS::EventSubscription'
